@@ -9,7 +9,8 @@ export class Vehicle {
     this.controls = controls;
     
     // Default settings
-    this.maxForce = 20000;
+    this.maxSpeedKmH = 250;
+    this.accelerationForce = 20000;
     this.turnSpeed = 2.0;
 
     this.mesh = new THREE.Group();
@@ -180,10 +181,12 @@ export class Vehicle {
     // Gas & Brake
     let engineForce = 0;
 
+    const currentSpeedKmH = currentSpeed * 3.6;
+
     if (this.controls.keys.forward) {
-      engineForce = -this.maxForce;
+      if (currentSpeedKmH < this.maxSpeedKmH) engineForce = -this.accelerationForce;
     } else if (this.controls.keys.backward) {
-      engineForce = this.maxForce;
+      if (currentSpeedKmH < this.maxSpeedKmH) engineForce = this.accelerationForce;
     }
 
     // Apply forces
@@ -194,28 +197,8 @@ export class Vehicle {
     this.mesh.position.copy(this.chassisBody.position);
     this.mesh.quaternion.copy(this.chassisBody.quaternion);
 
-    // Update Speedometer UI (Gauge)
-    const speed = currentSpeed * 3.6; // m/s to km/h
+    // Update Speedometer UI
     const speedEl = document.getElementById('speedometer');
-    if (speedEl) speedEl.innerText = Math.round(speed);
-    
-    const gaugeFill = document.getElementById('speed-fill');
-    if (gaugeFill) {
-      // stroke-dasharray="110" ayarlamıştık. 110 boş, 0 dolu demek.
-      // maxSpeed değerini referans alalım. (maxForce kabaca max hızı belirler)
-      // Ancak araç 50-150 km/h arası gider, biz 200 km/h'yi tavan alalım.
-      const maxVisualSpeed = 200;
-      let percent = Math.min(speed / maxVisualSpeed, 1.0);
-      
-      // Offset'i hesapla (110'dan 0'a)
-      const offset = 110 - (110 * percent);
-      gaugeFill.style.strokeDashoffset = offset;
-      
-      // Hızlandıkça rengi maviden kırmızıya çevir
-      const r = Math.round(255 * percent);
-      const g = Math.round(153 * (1 - percent));
-      const b = Math.round(255 * (1 - percent));
-      gaugeFill.style.stroke = `rgb(${r}, ${g}, ${b})`;
-    }
+    if (speedEl) speedEl.innerText = Math.round(currentSpeedKmH);
   }
 }

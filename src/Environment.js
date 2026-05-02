@@ -12,6 +12,7 @@ export class Environment {
     this.chunkSize = 100;
     this.viewDistance = 2; // Kaç chunk ileriye/geriye renderlanacak
     this.loadedChunks = new Map();
+    this.chunkGenerationQueue = [];
     this.buildingsGroup = new THREE.Group();
     this.scene.add(this.buildingsGroup);
 
@@ -203,8 +204,22 @@ export class Environment {
     const neededChunks = new Set();
     for (let x = -this.viewDistance; x <= this.viewDistance; x++) {
       for (let z = -this.viewDistance; z <= this.viewDistance; z++) {
-        neededChunks.add(`${currentChunkX + x},${currentChunkZ + z}`);
-        this.generateChunk(currentChunkX + x, currentChunkZ + z);
+        const id = `${currentChunkX + x},${currentChunkZ + z}`;
+        neededChunks.add(id);
+        
+        // Eğer yüklü değilse ve sırada yoksa, sıraya ekle
+        if (!this.loadedChunks.has(id) && !this.chunkGenerationQueue.some(c => c.id === id)) {
+          this.chunkGenerationQueue.push({ id, x: currentChunkX + x, z: currentChunkZ + z });
+        }
+      }
+    }
+
+    // Takılmaları (stutter) önlemek için her karede SADECE 1 CHUNK yükle
+    if (this.chunkGenerationQueue.length > 0) {
+      const chunk = this.chunkGenerationQueue.shift();
+      // Eğer sıradayken çoktan uzaklaşmışsak boşuna yükleme
+      if (neededChunks.has(chunk.id)) {
+        this.generateChunk(chunk.x, chunk.z);
       }
     }
 

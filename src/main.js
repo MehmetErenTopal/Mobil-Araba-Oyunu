@@ -31,6 +31,8 @@ class Game {
     const distVal = document.getElementById('cam-dist-val');
     const speedInput = document.getElementById('max-speed');
     const speedVal = document.getElementById('max-speed-val');
+    const accelInput = document.getElementById('accel-speed');
+    const accelVal = document.getElementById('accel-speed-val');
 
     if(btnSettings) {
       btnSettings.addEventListener('click', () => modal.classList.remove('hidden'));
@@ -43,8 +45,14 @@ class Game {
 
       speedInput.addEventListener('input', (e) => {
         const speed = parseFloat(e.target.value);
-        this.vehicle.maxForce = speed;
+        this.vehicle.maxSpeedKmH = speed;
         speedVal.innerText = speed;
+      });
+
+      accelInput.addEventListener('input', (e) => {
+        const accel = parseFloat(e.target.value);
+        this.vehicle.accelerationForce = accel;
+        accelVal.innerText = accel;
       });
     }
   }
