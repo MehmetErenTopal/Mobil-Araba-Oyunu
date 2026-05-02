@@ -14,10 +14,39 @@ class Game {
     this.vehicle = new Vehicle(this.scene, this.world, this.controls);
 
     this.clock = new THREE.Clock();
+    this.camDistance = 4;
     
     window.addEventListener('resize', this.onWindowResize.bind(this), false);
 
+    this.initSettingsUI();
+
     this.animate();
+  }
+
+  initSettingsUI() {
+    const btnSettings = document.getElementById('btn-settings');
+    const modal = document.getElementById('settings-modal');
+    const btnClose = document.getElementById('btn-close-settings');
+    const distInput = document.getElementById('cam-dist');
+    const distVal = document.getElementById('cam-dist-val');
+    const speedInput = document.getElementById('max-speed');
+    const speedVal = document.getElementById('max-speed-val');
+
+    if(btnSettings) {
+      btnSettings.addEventListener('click', () => modal.classList.remove('hidden'));
+      btnClose.addEventListener('click', () => modal.classList.add('hidden'));
+
+      distInput.addEventListener('input', (e) => {
+        this.camDistance = parseFloat(e.target.value);
+        distVal.innerText = this.camDistance;
+      });
+
+      speedInput.addEventListener('input', (e) => {
+        const speed = parseFloat(e.target.value);
+        this.vehicle.maxForce = speed;
+        speedVal.innerText = speed;
+      });
+    }
   }
 
   initScene() {
@@ -53,13 +82,13 @@ class Game {
     const carQuaternion = this.vehicle.mesh.quaternion;
 
     // Calculate desired camera position (behind and above the car)
-    const cameraOffset = new THREE.Vector3(0, 2, -4);
+    const cameraOffset = new THREE.Vector3(0, 2, -this.camDistance);
     cameraOffset.applyQuaternion(carQuaternion);
     
     const desiredPosition = carPosition.clone().add(cameraOffset);
 
-    // Smoothly interpolate camera position
-    this.camera.position.lerp(desiredPosition, 0.1);
+    // Hard-sync kamera pozisyonu (Takılmaları tamamen engeller)
+    this.camera.position.copy(desiredPosition);
 
     // Look at a point slightly above the car
     const lookAtPos = carPosition.clone().add(new THREE.Vector3(0, 1, 0));

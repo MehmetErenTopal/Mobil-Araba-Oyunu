@@ -7,6 +7,10 @@ export class Vehicle {
     this.scene = scene;
     this.world = world;
     this.controls = controls;
+    
+    // Default settings
+    this.maxForce = 20000;
+    this.turnSpeed = 2.0;
 
     this.mesh = new THREE.Group();
     // Temporary box until model loads (Larger size)
@@ -145,26 +149,27 @@ export class Vehicle {
 
   update() {
     // Engine and Steering Logic
-    const maxSteerVal = 0.9;
-    const maxForce = 12000;
     const brakeForce = 150; // Hover car might have less braking
     
-    // Steering (Ters çevrildi)
-    let steerVal = 0;
-    if (this.controls.keys.left) steerVal = -maxSteerVal;
-    else if (this.controls.keys.right) steerVal = maxSteerVal;
+    // Tank/Drone tarzı dönüş (Direkt kendi ekseninde dönme)
+    let turnVal = 0;
+    if (this.controls.keys.left) turnVal = this.turnSpeed;
+    else if (this.controls.keys.right) turnVal = -this.turnSpeed;
     
-    this.vehicle.setSteeringValue(steerVal, 0);
-    this.vehicle.setSteeringValue(steerVal, 1);
+    // RaycastVehicle'ın direksiyonunu iptal et
+    this.vehicle.setSteeringValue(0, 0);
+    this.vehicle.setSteeringValue(0, 1);
+    
+    // Direkt y ekseninde döndür
+    this.chassisBody.angularVelocity.y = turnVal;
 
     // Gas & Brake
     let engineForce = 0;
-    let braking = 0;
 
     if (this.controls.keys.forward) {
-      engineForce = -maxForce;
+      engineForce = -this.maxForce;
     } else if (this.controls.keys.backward) {
-      engineForce = maxForce;
+      engineForce = this.maxForce;
     }
 
     // Apply forces

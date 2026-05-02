@@ -14,7 +14,12 @@
     <!-- UI Overlay -->
     <div id="ui-layer">
       <!-- Top info -->
-      <div id="speedometer">0 km/h</div>
+      <div id="top-bar">
+        <div id="speedometer">0 km/h</div>
+        <button id="btn-settings" class="glass-btn small-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg>
+        </button>
+      </div>
       
       <!-- Controls -->
       <div id="controls">
@@ -37,6 +42,25 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 12 5 19 12"></polyline><line x1="12" y1="5" x2="12" y2="19"></line></svg>
           </button>
         </div>
+      </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div id="settings-modal" class="hidden">
+      <div class="settings-content">
+        <h2>Ayarlar</h2>
+        
+        <div class="setting-item">
+          <label for="cam-dist">Kamera Yakınlığı: <span id="cam-dist-val">4</span></label>
+          <input type="range" id="cam-dist" min="2" max="15" step="0.5" value="4">
+        </div>
+        
+        <div class="setting-item">
+          <label for="max-speed">Maksimum Hız: <span id="max-speed-val">20000</span></label>
+          <input type="range" id="max-speed" min="5000" max="50000" step="1000" value="20000">
+        </div>
+
+        <button id="btn-close-settings" class="glass-btn close-btn">Kapat</button>
       </div>
     </div>
     
