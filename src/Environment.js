@@ -36,7 +36,7 @@ export class Environment {
 
   initGround() {
     // Kaplama yükle
-    const groundTexture = this.textureLoader.load('/kaplamalar/zemin/asfalt.png', (tex) => {
+    const groundTexture = this.textureLoader.load(import.meta.env.BASE_URL + 'kaplamalar/zemin/asfalt.png', (tex) => {
       tex.wrapS = THREE.RepeatWrapping;
       tex.wrapT = THREE.RepeatWrapping;
       tex.repeat.set(100, 100); // 1000x1000 alanda 100 kere tekrar etsin
@@ -74,15 +74,15 @@ export class Environment {
 
     // 3 Çeşit Bina Kaplaması (Ten, Mavi, Beyaz)
     const loadTex = (url) => {
-      return this.textureLoader.load(url, undefined, undefined, () => {
+      return this.textureLoader.load(import.meta.env.BASE_URL + url, undefined, undefined, () => {
         console.warn(`${url} bulunamadı.`);
       });
     };
 
     const textures = [
-      { tex: loadTex('/kaplamalar/binalar/bina_ten.png'), color: 0xccbbaaa },
-      { tex: loadTex('/kaplamalar/binalar/bina_mavi.png'), color: 0x4a86e8 },
-      { tex: loadTex('/kaplamalar/binalar/bina_beyaz.png'), color: 0xdddddd }
+      { tex: loadTex('kaplamalar/binalar/bina_ten.png'), color: 0xccbbaaa },
+      { tex: loadTex('kaplamalar/binalar/bina_mavi.png'), color: 0x4a86e8 },
+      { tex: loadTex('kaplamalar/binalar/bina_beyaz.png'), color: 0xdddddd }
     ];
 
     const numBuildings = 150;

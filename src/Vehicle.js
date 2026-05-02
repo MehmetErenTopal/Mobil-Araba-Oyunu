@@ -101,7 +101,7 @@ export class Vehicle {
     // Modeller klasöründeki glb dosyasını yüklemeye çalış
     // Kullanıcı modeli buraya koyacak: public/modeller/car.glb
     loader.load(
-      '/modeller/car.glb',
+      import.meta.env.BASE_URL + 'modeller/car.glb',
       (gltf) => {
         // Fallback mesh'i kaldır
         this.mesh.remove(this.fallbackMesh);
