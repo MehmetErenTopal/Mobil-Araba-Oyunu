@@ -151,10 +151,24 @@ export class Vehicle {
     // Engine and Steering Logic
     const brakeForce = 150; // Hover car might have less braking
     
-    // Tank/Drone tarzı dönüş (Direkt kendi ekseninde dönme)
+    // Tank/Drone tarzı dönüş (Direkt kendi ekseninde dönme) - Sadece hareket ederken
     let turnVal = 0;
-    if (this.controls.keys.left) turnVal = this.turnSpeed;
-    else if (this.controls.keys.right) turnVal = -this.turnSpeed;
+    
+    // Aracın hızını ölç (m/s)
+    const currentSpeed = this.chassisBody.velocity.length();
+    
+    // Hız 1 m/s den büyükse veya gaza/frene basılıyorsa dönebilsin
+    const isMoving = currentSpeed > 1 || this.controls.keys.forward || this.controls.keys.backward;
+    
+    if (isMoving) {
+      if (this.controls.keys.left) turnVal = this.turnSpeed;
+      else if (this.controls.keys.right) turnVal = -this.turnSpeed;
+      
+      // Geri giderken direksiyon yönünü tersine çevir (gerçek araba hissi)
+      if (this.controls.keys.backward && !this.controls.keys.forward) {
+         turnVal = -turnVal;
+      }
+    }
     
     // RaycastVehicle'ın direksiyonunu iptal et
     this.vehicle.setSteeringValue(0, 0);
@@ -180,9 +194,28 @@ export class Vehicle {
     this.mesh.position.copy(this.chassisBody.position);
     this.mesh.quaternion.copy(this.chassisBody.quaternion);
 
-    // Update Speedometer UI
-    const speed = this.chassisBody.velocity.length() * 3.6; // m/s to km/h
+    // Update Speedometer UI (Gauge)
+    const speed = currentSpeed * 3.6; // m/s to km/h
     const speedEl = document.getElementById('speedometer');
-    if(speedEl) speedEl.innerText = `${Math.round(speed)} km/h`;
+    if (speedEl) speedEl.innerText = Math.round(speed);
+    
+    const gaugeFill = document.getElementById('speed-fill');
+    if (gaugeFill) {
+      // stroke-dasharray="110" ayarlamıştık. 110 boş, 0 dolu demek.
+      // maxSpeed değerini referans alalım. (maxForce kabaca max hızı belirler)
+      // Ancak araç 50-150 km/h arası gider, biz 200 km/h'yi tavan alalım.
+      const maxVisualSpeed = 200;
+      let percent = Math.min(speed / maxVisualSpeed, 1.0);
+      
+      // Offset'i hesapla (110'dan 0'a)
+      const offset = 110 - (110 * percent);
+      gaugeFill.style.strokeDashoffset = offset;
+      
+      // Hızlandıkça rengi maviden kırmızıya çevir
+      const r = Math.round(255 * percent);
+      const g = Math.round(153 * (1 - percent));
+      const b = Math.round(255 * (1 - percent));
+      gaugeFill.style.stroke = `rgb(${r}, ${g}, ${b})`;
+    }
   }
 }

@@ -74,25 +74,42 @@ class Game {
     this.world.defaultContactMaterial.friction = 0.5;
   }
 
-  updateCamera() {
+  updateCamera(dt) {
     if (!this.vehicle || !this.vehicle.mesh) return;
 
-    // Follow camera logic
     const carPosition = this.vehicle.mesh.position;
-    const carQuaternion = this.vehicle.mesh.quaternion;
-
-    // Calculate desired camera position (behind and above the car)
-    const cameraOffset = new THREE.Vector3(0, 2, -this.camDistance);
-    cameraOffset.applyQuaternion(carQuaternion);
+    const euler = new THREE.Euler().setFromQuaternion(this.vehicle.mesh.quaternion, 'YXZ');
     
-    const desiredPosition = carPosition.clone().add(cameraOffset);
+    // Kamera dönüş gecikmesi (Drift hissi)
+    if (this.camYaw === undefined) this.camYaw = euler.y;
+    let diff = euler.y - this.camYaw;
+    while (diff > Math.PI) diff -= Math.PI * 2;
+    while (diff < -Math.PI) diff += Math.PI * 2;
+    this.camYaw += diff * 5 * dt;
 
-    // Hard-sync kamera pozisyonu (Takılmaları tamamen engeller)
-    this.camera.position.copy(desiredPosition);
+    const smoothQuat = new THREE.Quaternion().setFromAxisAngle(new THREE.Vector3(0, 1, 0), this.camYaw);
 
-    // Look at a point slightly above the car
-    const lookAtPos = carPosition.clone().add(new THREE.Vector3(0, 1, 0));
-    this.camera.lookAt(lookAtPos);
+    // Temel kamera pozisyonu
+    const cameraOffset = new THREE.Vector3(0, 2, -this.camDistance);
+    cameraOffset.applyQuaternion(smoothQuat);
+    
+    // Hızlandıkça kameranın geriye yaslanması (Speed pullback)
+    const speed = this.vehicle.chassisBody.velocity.length();
+    const speedPullback = Math.min(speed * 0.04, 3);
+    const pullBackOffset = new THREE.Vector3(0, 0, -speedPullback).applyQuaternion(smoothQuat);
+    
+    const desiredPosition = carPosition.clone().add(cameraOffset).add(pullBackOffset);
+
+    // Yumuşak takip
+    this.camera.position.lerp(desiredPosition, 15 * dt);
+
+    // Hıza göre hafif yukarı bakma
+    const lookAtPos = carPosition.clone().add(new THREE.Vector3(0, 1 + speed * 0.02, 0));
+    
+    if (!this.currentLookAt) this.currentLookAt = lookAtPos.clone();
+    this.currentLookAt.lerp(lookAtPos, 20 * dt);
+    
+    this.camera.lookAt(this.currentLookAt);
   }
 
   onWindowResize() {
@@ -112,10 +129,11 @@ class Game {
     // Update vehicle
     if (this.vehicle) {
       this.vehicle.update();
+      this.environment.update(this.vehicle.mesh.position);
     }
 
-    // Update camera
-    this.updateCamera();
+    // Update camera with dt
+    this.updateCamera(dt);
 
     // Render scene
     this.renderer.render(this.scene, this.camera);
