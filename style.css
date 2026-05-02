@@ -1,0 +1,178 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  user-select: none; /* Prevent text selection on mobile */
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: #000;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+#game-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+}
+
+#game-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+#ui-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 10;
+  pointer-events: none; /* Let clicks pass through except on buttons */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+#speedometer {
+  margin: 20px auto;
+  padding: 10px 20px;
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 20px;
+  color: #fff;
+  font-size: 24px;
+  font-weight: bold;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+  pointer-events: auto;
+}
+
+#controls {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px 40px;
+  margin-bottom: 20px;
+  pointer-events: none;
+}
+
+.control-group {
+  display: flex;
+  gap: 15px;
+  pointer-events: auto;
+}
+
+.glass-btn {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.15);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+  transition: all 0.1s ease;
+  outline: none;
+  cursor: pointer;
+}
+
+.glass-btn:active, .glass-btn.active {
+  background: rgba(255, 255, 255, 0.3);
+  transform: scale(0.95);
+  box-shadow: 0 4px 16px 0 rgba(0, 0, 0, 0.37);
+}
+
+.glass-btn svg {
+  width: 32px;
+  height: 32px;
+}
+
+.action-btn {
+  width: 80px;
+  height: 80px;
+}
+
+#btn-gas {
+  background: rgba(100, 255, 100, 0.2);
+  border-color: rgba(100, 255, 100, 0.4);
+}
+
+#btn-gas:active, #btn-gas.active {
+  background: rgba(100, 255, 100, 0.4);
+}
+
+#btn-brake {
+  background: rgba(255, 100, 100, 0.2);
+  border-color: rgba(255, 100, 100, 0.4);
+}
+
+#btn-brake:active, #btn-brake.active {
+  background: rgba(255, 100, 100, 0.4);
+}
+
+/* Loading Screen */
+#loading-screen {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: #111;
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: white;
+  transition: opacity 0.5s ease;
+  opacity: 0;
+  pointer-events: none;
+}
+
+#loading-screen.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.loader {
+  border: 4px solid rgba(255,255,255,0.1);
+  border-left-color: #09f;
+  border-radius: 50%;
+  width: 50px;
+  height: 50px;
+  animation: spin 1s linear infinite;
+  margin-bottom: 20px;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@media (max-width: 600px) {
+  #controls {
+    padding: 10px 20px;
+  }
+  .glass-btn {
+    width: 60px;
+    height: 60px;
+  }
+  .action-btn {
+    width: 70px;
+    height: 70px;
+  }
+}

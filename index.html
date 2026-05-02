@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Hover Car Oyunu</title>
+    <link rel="stylesheet" href="/style.css">
+  </head>
+  <body>
+    <div id="game-container">
+      <canvas id="game-canvas"></canvas>
+    </div>
+
+    <!-- UI Overlay -->
+    <div id="ui-layer">
+      <!-- Top info -->
+      <div id="speedometer">0 km/h</div>
+      
+      <!-- Controls -->
+      <div id="controls">
+        <!-- Left Side: Steering -->
+        <div class="control-group left-group">
+          <button id="btn-left" class="glass-btn steer-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+          </button>
+          <button id="btn-right" class="glass-btn steer-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+          </button>
+        </div>
+
+        <!-- Right Side: Gas/Brake -->
+        <div class="control-group right-group">
+          <button id="btn-brake" class="glass-btn action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="19 12 12 19 5 12"></polyline><line x1="12" y1="19" x2="12" y2="5"></line></svg>
+          </button>
+          <button id="btn-gas" class="glass-btn action-btn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="5 12 12 5 19 12"></polyline><line x1="12" y1="5" x2="12" y2="19"></line></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="active">
+      <div class="loader"></div>
+      <p>Yükleniyor...</p>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
