@@ -103,36 +103,31 @@ export class Environment {
       
       // Bu binaya özel kaplama tekrarı ayarlamak için dokuyu klonla
       let buildingSideMat;
-      if (style.tex && style.tex.image) { // Eğer resim varsa
-        const clonedTex = style.tex.clone();
-        clonedTex.needsUpdate = true;
-        clonedTex.wrapS = THREE.RepeatWrapping;
-        clonedTex.wrapT = THREE.RepeatWrapping;
-        // Örneğin her 4 birimde 1 pencere dokusu tekrar etsin
-        const repeatX = Math.max(1, Math.round(width / 4));
-        const repeatZ = Math.max(1, Math.round(depth / 4));
-        const repeatY = Math.max(1, Math.round(height / 4));
-        
-        // Sağ-Sol yüzeyler için Z ve Y
-        // Ön-Arka yüzeyler için X ve Y
-        // BoxGeometry material indeksleri: 0: sağ, 1: sol, 2: üst, 3: alt, 4: ön, 5: arka
-        const texSideX = clonedTex.clone();
-        texSideX.needsUpdate = true;
-        texSideX.repeat.set(repeatZ, repeatY);
-        
-        const texSideZ = clonedTex.clone();
-        texSideZ.needsUpdate = true;
-        texSideZ.repeat.set(repeatX, repeatY);
+      const clonedTex = style.tex.clone();
+      clonedTex.needsUpdate = true;
+      clonedTex.wrapS = THREE.RepeatWrapping;
+      clonedTex.wrapT = THREE.RepeatWrapping;
+      
+      // Örneğin her 4 birimde 1 pencere dokusu tekrar etsin
+      const repeatX = Math.max(1, Math.round(width / 4));
+      const repeatZ = Math.max(1, Math.round(depth / 4));
+      const repeatY = Math.max(1, Math.round(height / 4));
+      
+      // Sağ-Sol yüzeyler için Z ve Y
+      // Ön-Arka yüzeyler için X ve Y
+      // BoxGeometry material indeksleri: 0: sağ, 1: sol, 2: üst, 3: alt, 4: ön, 5: arka
+      const texSideX = clonedTex.clone();
+      texSideX.needsUpdate = true;
+      texSideX.repeat.set(repeatZ, repeatY);
+      
+      const texSideZ = clonedTex.clone();
+      texSideZ.needsUpdate = true;
+      texSideZ.repeat.set(repeatX, repeatY);
 
-        const matSideX = new THREE.MeshStandardMaterial({ map: texSideX });
-        const matSideZ = new THREE.MeshStandardMaterial({ map: texSideZ });
+      const matSideX = new THREE.MeshStandardMaterial({ map: texSideX });
+      const matSideZ = new THREE.MeshStandardMaterial({ map: texSideZ });
 
-        buildingSideMat = [matSideX, matSideX, roofMat, roofMat, matSideZ, matSideZ];
-      } else {
-        // Kaplama yoksa sadece renk
-        const colorMat = new THREE.MeshStandardMaterial({ color: style.color });
-        buildingSideMat = [colorMat, colorMat, roofMat, roofMat, colorMat, colorMat];
-      }
+      buildingSideMat = [matSideX, matSideX, roofMat, roofMat, matSideZ, matSideZ];
 
       const mesh = new THREE.Mesh(buildingGeo, buildingSideMat);
       mesh.scale.set(width, height, depth);

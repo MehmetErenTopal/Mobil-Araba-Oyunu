@@ -53,7 +53,7 @@ class Game {
     const carQuaternion = this.vehicle.mesh.quaternion;
 
     // Calculate desired camera position (behind and above the car)
-    const cameraOffset = new THREE.Vector3(0, 3, -6);
+    const cameraOffset = new THREE.Vector3(0, 2, -4);
     cameraOffset.applyQuaternion(carQuaternion);
     
     const desiredPosition = carPosition.clone().add(cameraOffset);

@@ -107,8 +107,16 @@ export class Vehicle {
         this.mesh.remove(this.fallbackMesh);
         
         const model = gltf.scene;
-        // Modeli büyüt
-        model.scale.set(1.5, 1.5, 1.5);
+        
+        // Modeli hitbox'a tam sığacak şekilde dinamik olarak boyutlandır
+        const box = new THREE.Box3().setFromObject(model);
+        const size = new THREE.Vector3();
+        box.getSize(size);
+        
+        // Hitbox'ın uzunluğu 6 birim. Modelin uzunluğunu (Z) 6'ya eşitleyecek çarpanı bul:
+        const scaleFactor = 6 / size.z;
+        model.scale.set(scaleFactor, scaleFactor, scaleFactor);
+        
         model.position.set(0, -0.75, 0); // Fiziğe göre alt kısıma hizala
         
         // Gölgeleri aç
@@ -137,9 +145,9 @@ export class Vehicle {
 
   update() {
     // Engine and Steering Logic
-    const maxSteerVal = 0.5;
-    const maxForce = 2000;
-    const brakeForce = 50; // Hover car might have less braking
+    const maxSteerVal = 0.9;
+    const maxForce = 12000;
+    const brakeForce = 150; // Hover car might have less braking
     
     // Steering (Ters çevrildi)
     let steerVal = 0;
